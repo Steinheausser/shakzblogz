@@ -28,9 +28,17 @@ const nav = [
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap"
 		/>
 		<title>{pageTitle}</title>
+		<script is:inline>
+			// Dark by default; remember the reader's choice. Runs before paint to avoid a flash.
+			try {
+				document.documentElement.dataset.theme = localStorage.getItem('theme') || 'dark';
+			} catch {
+				document.documentElement.dataset.theme = 'dark';
+			}
+		</script>
 	</head>
 	<body>
 		<header class="site-header">
@@ -43,8 +51,20 @@ const nav = [
 						</a>
 					))
 				}
+				<button class="theme-toggle" type="button" aria-label="Toggle light and dark mode">
+					<span class="to-light">light</span><span class="to-dark">dark</span>
+				</button>
 			</nav>
 		</header>
+		<script is:inline>
+			document.querySelector('.theme-toggle').addEventListener('click', () => {
+				const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+				document.documentElement.dataset.theme = next;
+				try {
+					localStorage.setItem('theme', next);
+				} catch {}
+			});
+		</script>
 		<main>
 			<slot />
 		</main>
@@ -56,14 +76,28 @@ const nav = [
 
 <style is:global>
 	:root {
-		--paper: #f4ecd8;
-		--paper-edge: #ebe0c4;
-		--ink: #3b2f22;
-		--ink-soft: #6f5d48;
-		--accent: #8b4a1f;
-		--rule: #d8c9a6;
+		--paper: #e9d8b4;
+		--paper-edge: #dcc69a;
+		--ink: #35281a;
+		--ink-soft: #66533b;
+		--accent: #874118;
+		--rule: #c9b083;
+		--tint: #dcc69a;
+		--select: #d4b77f;
 		--measure: 38rem;
 		color-scheme: light;
+	}
+
+	:root[data-theme='dark'] {
+		--paper: #211b14;
+		--paper-edge: #17130e;
+		--ink: #e6d6b8;
+		--ink-soft: #a8957a;
+		--accent: #d99a5f;
+		--rule: #44382a;
+		--tint: #2e261c;
+		--select: #5a4630;
+		color-scheme: dark;
 	}
 
 	* {
@@ -83,9 +117,9 @@ const nav = [
 		display: flex;
 		flex-direction: column;
 		color: var(--ink);
-		font-family: 'EB Garamond', 'Iowan Old Style', Georgia, serif;
-		font-size: 1.2rem;
-		line-height: 1.7;
+		font-family: 'Literata', Georgia, serif;
+		font-size: 1.1rem;
+		line-height: 1.75;
 		-webkit-font-smoothing: antialiased;
 	}
 
@@ -137,13 +171,13 @@ const nav = [
 
 	code {
 		font-size: 0.85em;
-		background: var(--paper-edge);
+		background: var(--tint);
 		padding: 0.1em 0.3em;
 		border-radius: 3px;
 	}
 
 	::selection {
-		background: #e2cfa3;
+		background: var(--select);
 	}
 
 	.muted {
@@ -181,6 +215,25 @@ const nav = [
 		color: var(--ink);
 		text-decoration: underline;
 		text-decoration-color: var(--rule);
+	}
+
+	.theme-toggle {
+		font: inherit;
+		color: var(--ink-soft);
+		background: none;
+		border: 0;
+		border-left: 1px solid var(--rule);
+		padding: 0 0 0 1.25rem;
+		cursor: pointer;
+	}
+
+	.theme-toggle:hover {
+		color: var(--ink);
+	}
+
+	[data-theme='dark'] .to-dark,
+	:root:not([data-theme='dark']) .to-light {
+		display: none;
 	}
 
 	.site-footer {
