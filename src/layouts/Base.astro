@@ -1,0 +1,193 @@
+---
+import { SITE_TITLE, SITE_TAGLINE, url } from '../lib/site';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title, description = SITE_TAGLINE } = Astro.props;
+const pageTitle = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
+const path = Astro.url.pathname;
+const nav = [
+	{ href: url('/blog/'), label: 'blog' },
+	{ href: url('/poetry/'), label: 'poetry' },
+	{ href: url('/about/'), label: 'about' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
+		/>
+		<title>{pageTitle}</title>
+	</head>
+	<body>
+		<header class="site-header">
+			<a class="brand" href={url('/')}>{SITE_TITLE}</a>
+			<nav>
+				{
+					nav.map((item) => (
+						<a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>
+							{item.label}
+						</a>
+					))
+				}
+			</nav>
+		</header>
+		<main>
+			<slot />
+		</main>
+		<footer class="site-footer">
+			<span>&copy; {new Date().getFullYear()} {SITE_TITLE}</span>
+		</footer>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--paper: #f4ecd8;
+		--paper-edge: #ebe0c4;
+		--ink: #3b2f22;
+		--ink-soft: #6f5d48;
+		--accent: #8b4a1f;
+		--rule: #d8c9a6;
+		--measure: 38rem;
+		color-scheme: light;
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	html {
+		background: radial-gradient(ellipse at center, var(--paper) 60%, var(--paper-edge) 100%) fixed
+			var(--paper);
+	}
+
+	body {
+		margin: 0 auto;
+		max-width: var(--measure);
+		padding: 3rem 1.25rem 2rem;
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		color: var(--ink);
+		font-family: 'EB Garamond', 'Iowan Old Style', Georgia, serif;
+		font-size: 1.2rem;
+		line-height: 1.7;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	main {
+		flex: 1;
+	}
+
+	a {
+		color: var(--accent);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.2em;
+	}
+
+	a:hover {
+		color: var(--ink);
+	}
+
+	h1,
+	h2,
+	h3 {
+		font-weight: 600;
+		line-height: 1.25;
+		margin: 2rem 0 0.75rem;
+	}
+
+	h1 {
+		font-size: 2rem;
+		margin-top: 0;
+	}
+
+	hr {
+		border: 0;
+		border-top: 1px solid var(--rule);
+		margin: 2.5rem 0;
+	}
+
+	blockquote {
+		margin: 1.5rem 0;
+		padding-left: 1.25rem;
+		border-left: 2px solid var(--rule);
+		color: var(--ink-soft);
+		font-style: italic;
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	code {
+		font-size: 0.85em;
+		background: var(--paper-edge);
+		padding: 0.1em 0.3em;
+		border-radius: 3px;
+	}
+
+	::selection {
+		background: #e2cfa3;
+	}
+
+	.muted {
+		color: var(--ink-soft);
+	}
+
+	.site-header {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem 1.5rem;
+		margin-bottom: 3.5rem;
+	}
+
+	.brand {
+		font-size: 1.4rem;
+		font-style: italic;
+		color: var(--ink);
+		text-decoration: none;
+	}
+
+	.site-header nav {
+		display: flex;
+		gap: 1.25rem;
+	}
+
+	.site-header nav a {
+		color: var(--ink-soft);
+		text-decoration: none;
+	}
+
+	.site-header nav a:hover,
+	.site-header nav a[aria-current='page'] {
+		color: var(--ink);
+		text-decoration: underline;
+		text-decoration-color: var(--rule);
+	}
+
+	.site-footer {
+		margin-top: 4rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--rule);
+		font-size: 0.95rem;
+		color: var(--ink-soft);
+	}
+</style>

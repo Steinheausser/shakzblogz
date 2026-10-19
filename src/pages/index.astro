@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import EntryList from '../components/EntryList.astro';
+import { getEntries, url } from '../lib/site';
+
+const posts = (await getEntries('blog')).slice(0, 5);
+const poems = (await getEntries('poetry')).slice(0, 5);
+---
+
+<Base>
+	<p class="intro">
+		Welcome. This is a small, quiet corner for essays, notes and poems &mdash; written slowly, read
+		slowly.
+	</p>
+
+	<h2>Recent writing</h2>
+	<EntryList entries={posts} />
+	<p class="more"><a href={url('/blog/')}>all posts &rarr;</a></p>
+
+	<h2>Recent poems</h2>
+	<EntryList entries={poems} />
+	<p class="more"><a href={url('/poetry/')}>all poems &rarr;</a></p>
+</Base>
+
+<style>
+	.intro {
+		font-size: 1.3rem;
+		font-style: italic;
+		color: var(--ink-soft);
+		margin: 0 0 3rem;
+	}
+
+	.more {
+		font-size: 1rem;
+		text-align: right;
+		margin-top: 0.5rem;
+	}
+</style>

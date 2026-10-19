@@ -1,0 +1,17 @@
+---
+import { render } from 'astro:content';
+import Entry from '../../layouts/Entry.astro';
+import { getEntries } from '../../lib/site';
+
+export async function getStaticPaths() {
+	const poems = await getEntries('poetry');
+	return poems.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Entry entry={entry}>
+	<Content />
+</Entry>

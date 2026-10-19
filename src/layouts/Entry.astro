@@ -1,0 +1,59 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Base from './Base.astro';
+import { formatDate, url } from '../lib/site';
+
+interface Props {
+	entry: CollectionEntry<'blog' | 'poetry'>;
+}
+
+const { entry } = Astro.props;
+const { title, date, description } = entry.data;
+const isPoem = entry.collection === 'poetry';
+---
+
+<Base title={title} description={description}>
+	<article class:list={{ poem: isPoem }}>
+		<header>
+			<h1>{title}</h1>
+			<time class="muted" datetime={date.toISOString()}>{formatDate(date)}</time>
+		</header>
+		<div class="body">
+			<slot />
+		</div>
+	</article>
+	<p class="back">
+		<a href={url(`/${entry.collection}/`)}>&larr; all {isPoem ? 'poems' : 'posts'}</a>
+	</p>
+</Base>
+
+<style>
+	header {
+		margin-bottom: 2.5rem;
+	}
+
+	header h1 {
+		margin-bottom: 0.25rem;
+	}
+
+	time {
+		font-style: italic;
+		font-size: 1rem;
+	}
+
+	.poem header,
+	.poem .body {
+		text-align: center;
+	}
+
+	/* Keep the line breaks you type in a poem. */
+	.poem .body :global(p) {
+		white-space: pre-line;
+		margin: 0 0 1.75rem;
+	}
+
+	.back {
+		margin-top: 3rem;
+		font-size: 1rem;
+	}
+</style>

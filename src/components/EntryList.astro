@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, url } from '../lib/site';
+
+interface Props {
+	entries: CollectionEntry<'blog' | 'poetry'>[];
+}
+
+const { entries } = Astro.props;
+---
+
+{
+	entries.length === 0 ? (
+		<p class="muted">Nothing here yet.</p>
+	) : (
+		<ul class="entries">
+			{entries.map((entry) => (
+				<li>
+					<a href={url(`/${entry.collection}/${entry.id}/`)}>{entry.data.title}</a>
+					<time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time>
+				</li>
+			))}
+		</ul>
+	)
+}
+
+<style>
+	.entries {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	li {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 0 1rem;
+		padding: 0.6rem 0;
+		border-bottom: 1px dotted var(--rule);
+	}
+
+	a {
+		color: var(--ink);
+		text-decoration: none;
+	}
+
+	a:hover {
+		color: var(--accent);
+	}
+
+	time {
+		font-size: 0.95rem;
+		color: var(--ink-soft);
+		font-style: italic;
+	}
+</style>
